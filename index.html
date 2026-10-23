@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ligações e Reuniões – Âncora</title>
+<style>
+:root{--bg:#f0f2f5;--card:#fff;--tx:#1f2430;--mut:#6c757d;--bd:#e3e6ea;--pri:#0d6efd;--ok:#198754;--wa:#fd7e14;--dg:#dc3545;--hd:#212529;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171c;--card:#1d222a;--tx:#e6e8ec;--mut:#9aa3ad;--bd:#333a45;--hd:#0c0e11;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14171c;--card:#1d222a;--tx:#e6e8ec;--mut:#9aa3ad;--bd:#333a45;--hd:#0c0e11;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+nav{background:var(--hd);color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+nav b{font-size:1.05rem}
+main{max-width:1100px;margin:0 auto;padding:16px}
+.btn{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:6px 12px;border-radius:8px;cursor:pointer;font:inherit;font-size:.85rem}
+.btn:hover{filter:brightness(.96)}
+.btn.p{background:var(--pri);border-color:var(--pri);color:#fff}.btn.g{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.d{color:var(--dg);border-color:var(--dg)}.btn.sm{padding:3px 8px;font-size:.8rem}
+nav .btn{background:transparent;color:#fff;border-color:#ffffff66}nav .btn.on{background:#fff;color:#000}
+.card{background:var(--card);border-radius:12px;box-shadow:0 2px 8px #0001;padding:16px;margin-bottom:16px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.cnt{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:10px}
+.c{border:1px solid var(--bd);border-radius:10px;padding:14px;text-align:center}
+.c .v{font-size:2.4rem;font-weight:700;line-height:1.1}.c .l{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:600}
+.c .s{font-size:.82rem;color:var(--mut);margin:4px 0 8px}
+textarea,input,select{width:100%;padding:7px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);font:inherit}
+label{display:block;font-weight:600;font-size:.85rem;margin:10px 0 4px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:760px;font-size:.88rem}
+th{text-align:left;font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);padding:8px;border-bottom:2px solid var(--bd)}
+td{padding:8px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.sub{font-size:.76rem;color:var(--mut)}
+.bd{font-size:.72rem;padding:2px 8px;border-radius:10px;font-weight:600;white-space:nowrap}
+.pendente{background:#e9ecef;color:#495057}.nao_atendido{background:#fff3cd;color:#856404}.numero_incorreto{background:#f8d7da;color:#842029}
+.sem_interesse{background:#dee2e6;color:#495057}.responsavel_ausente{background:#cfe2ff;color:#084298}.ligar_mais_tarde{background:#e0f3ff;color:#005f8a}.reuniao{background:#d1e7dd;color:#0a3622}
+dialog{border:none;border-radius:12px;padding:0;width:min(440px,94vw);background:var(--card);color:var(--tx);box-shadow:0 10px 40px #0004}
+dialog::backdrop{background:#0006}
+.dh{padding:14px 18px;font-weight:700;background:var(--pri);color:#fff}.dh.g{background:var(--ok)}
+.db{padding:14px 18px}.df{padding:12px 18px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--bd)}
+.opts{display:grid;gap:8px;margin-top:10px}.opts .btn{text-align:left;display:flex;justify-content:space-between;gap:8px}
+.opts small{color:var(--mut)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.tabs .on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.empty{text-align:center;color:var(--mut);padding:28px}
+.err{color:var(--dg);font-size:.82rem;margin-top:6px;display:none}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#212529;color:#fff;padding:10px 16px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:99}
+#toast.show{opacity:1}
+.bars{display:flex;align-items:flex-end;gap:6px;height:120px;margin:10px 0;overflow-x:auto}
+.bars div{flex:0 0 28px;text-align:center;font-size:.65rem;color:var(--mut)}.bars i{display:block;width:100%;border-radius:3px 3px 0 0}
+a.btn{text-decoration:none;display:inline-block}
+tr.msg{background:rgba(25,135,84,.12)}
+.act{display:flex;gap:6px;flex-wrap:wrap}
+.f4{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+@media(max-width:700px){
+ main{padding:10px}
+ #tw table{min-width:0}
+ #tw thead{display:none}
+ #tw table,#tw tbody,#tw tr,#tw td{display:block;width:100%}
+ #tw tr{border:1px solid var(--bd);border-radius:10px;padding:8px 12px;margin-bottom:10px}
+ #tw td{border:none;padding:4px 0;display:flex;gap:12px;justify-content:space-between;align-items:flex-start;text-align:right}
+ #tw td::before{content:attr(data-label);flex:0 0 88px;text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);font-weight:600;padding-top:2px}
+ #tw td[data-label="#"]{display:none}
+ #tw td[data-label="Ações"]{border-top:1px solid var(--bd);margin-top:6px;padding-top:8px}
+ #tw .act{justify-content:flex-end}
+}
+</style>
+</head>
+<body>
+<nav>
+  <b>📞 Ligações &amp; Reuniões</b>
+  <div class="row" style="gap:6px">
+    <button class="btn on" id="tabU" onclick="view('user')">Painel</button>
+    <button class="btn" id="tabR" onclick="view('rep')">Relatórios</button>
+  </div>
+</nav>
+<main>
+<section id="user">
+  <div class="row" style="margin-bottom:12px">
+    <h2 id="uname" style="margin:0;cursor:text" title="Clique para editar o nome" contenteditable="true" spellcheck="false" onblur="editName(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}"></h2>
+    <div class="row" style="gap:6px;justify-content:flex-end">
+      <button class="btn" onclick="exportJSON()">⬇ Backup</button>
+      <button class="btn" onclick="$('imp').click()">⬆ Restaurar</button>
+      <input type="file" id="imp" accept=".json" hidden onchange="importJSON(event)">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row"><b>Indicadores de atividade</b><span class="sub" id="wk"></span></div>
+    <div class="cnt" id="cnt"></div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <b>Lista de empresas <span class="bd pendente" id="badge" style="display:none"></span></b>
+      <div class="row" style="gap:6px">
+        <button class="btn p" id="btnAdd" onclick="toggleAdd()">+ Adicionar empresas</button>
+        <button class="btn d" id="btnClr" onclick="clearList()" style="display:none">Limpar tabela</button>
+      </div>
+    </div>
+    <div id="addArea" style="display:none;margin-top:12px">
+      <p class="sub">As empresas novas são <b>acrescentadas</b> à lista atual, nada é apagado. Telefones já cadastrados são ignorados.</p>
+      <label>Adicionar uma empresa</label>
+      <div class="f4"><input id="nEmp" placeholder="Empresa"><input id="nTel" type="tel" placeholder="Telefone"><input id="nSet" placeholder="Setor (opcional)"><input id="nCid" placeholder="Cidade (opcional)"></div>
+      <button class="btn p" style="margin-top:8px" onclick="addOne()">Adicionar empresa</button>
+      <label>Ou cole várias de uma vez</label>
+      <p class="sub">Formato: <code>Empresa, Telefone, Setor, Cidade</code> – uma por linha ou separadas por <code>;</code>. Setor e Cidade são opcionais.</p>
+      <textarea id="raw" rows="5" placeholder="Empresa ABC, (48) 99999-0001, Contabilidade, Laguna&#10;Loja XYZ, (48) 98888-0002, Varejo, Tubarão"></textarea>
+      <div class="row" style="justify-content:flex-start;margin-top:8px">
+        <button class="btn p" onclick="loadList()">Adicionar todas</button>
+        <button class="btn" onclick="toggleAdd()">Fechar</button>
+      </div>
+    </div>
+    <div id="empty" class="empty">Nenhuma empresa na lista. Clique em “+ Adicionar empresas” para começar.</div>
+    <div class="tw" id="tw" style="display:none;margin-top:8px">
+      <table>
+        <thead><tr><th>#</th><th>Empresa</th><th>Telefone</th><th>Setor</th><th>Cidade</th><th>Status</th><th>Responsável</th><th>Ações</th></tr></thead>
+        <tbody id="tb"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="rep" style="display:none">
+  <div class="row" style="margin-bottom:12px"><h2 style="margin:0">Relatórios</h2><button class="btn" onclick="exportCSV()">⬇ Exportar CSV</button></div>
+  <div class="tabs" id="tabs"></div>
+  <div id="repOut"></div>
+</section>
+</main>
+
+<!-- Resultado da ligação -->
+<dialog id="callDlg">
+  <div class="dh">Resultado da ligação</div>
+  <div class="db">
+    <div style="background:rgba(13,110,253,.08);border:1px solid rgba(13,110,253,.25);border-radius:8px;padding:10px">
+      <b id="cEmp"></b>
+      <div class="row" style="justify-content:flex-start;margin-top:4px"><span id="cTel" class="sub"></span><a id="cLink" class="btn g sm" style="text-decoration:none">Ligar</a><button class="btn sm" onclick="copyTel()">Copiar</button></div>
+      <div class="sub" id="cExtra"></div>
+    </div>
+    <label>Observação</label>
+    <textarea id="cObs" rows="2" placeholder="Anotações sobre este contato…"></textarea>
+    <div id="cOpts" class="opts">
+      <button class="btn" onclick="result('nao_atendido')">📵 Não atendido <small>não conta ligação</small></button>
+      <button class="btn" onclick="result('numero_incorreto')">❌ Número incorreto <small>não conta ligação</small></button>
+      <button class="btn" onclick="result('sem_interesse')">➖ Sem interesse <small>+1 ligação</small></button>
+      <button class="btn" onclick="result('responsavel_ausente')">🙋 Responsável ausente <small>+1 ligação</small></button>
+      <button class="btn" onclick="showLater()">🕒 Ligar mais tarde <small>+1 ligação</small></button>
+      <button class="btn g" onclick="showMeet()">📅 Reunião agendada <small>+1 ligação, +1 reunião</small></button>
+    </div>
+    <div id="cLater" style="display:none">
+      <label>Retorno em</label>
+      <div class="row" style="flex-wrap:nowrap"><input type="date" id="lDate"><input type="time" id="lTime"></div>
+      <div class="err" id="lErr">Selecione data e hora.</div>
+      <div class="row" style="justify-content:flex-start;margin-top:10px"><button class="btn p" onclick="confirmLater()">Confirmar</button><button class="btn" onclick="backOpts()">Voltar</button></div>
+    </div>
+    <div id="cMeet" style="display:none">
+      <label>Nome do responsável</label>
+      <input id="mNome" placeholder="Ex: Maria Silva">
+      <label>Contato pessoal <span class="sub">(opcional)</span></label>
+      <input id="mCont" type="tel" placeholder="Ex: (48) 99999-0001">
+      <label>Data e hora da reunião</label>
+      <div class="row" style="flex-wrap:nowrap"><input type="date" id="mDate"><input type="time" id="mTime"></div>
+      <div class="err" id="mErr">Informe o nome, a data e a hora.</div>
+      <div class="row" style="justify-content:flex-start;margin-top:10px"><button class="btn g" onclick="confirmMeet()">Salvar reunião</button><button class="btn" onclick="backOpts()">Voltar</button></div>
+    </div>
+  </div>
+  <div class="df"><button class="btn" onclick="closeCall()">Fechar</button></div>
+</dialog>
+
+<!-- Confirmação -->
+<dialog id="cfDlg">
+  <div class="dh" style="background:var(--dg)" id="cfT">Confirmar</div>
+  <div class="db" id="cfM"></div>
+  <div class="df"><button class="btn" onclick="cfEnd(false)">Cancelar</button><button class="btn d" onclick="cfEnd(true)">Confirmar</button></div>
+</dialog>
+
+<div id="toast"></div>
+
+<script>
+const KEY='ancoraLigacoesDB';
+const ST={pendente:'Pendente',nao_atendido:'Não atendido',numero_incorreto:'Nº incorreto',sem_interesse:'Sem interesse',responsavel_ausente:'Resp. ausente',ligar_mais_tarde:'Ligar mais tarde',reuniao:'Reunião agendada'};
+const DEFS=[{k:'ligacoes',l:'Ligações realizadas',ic:'📞',c:'#0d6efd'},{k:'reunioes',l:'Reuniões agendadas',ic:'📅',c:'#198754'}];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const uid=()=>'_'+Math.random().toString(36).slice(2,10);
+let db=(()=>{try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.list&&s.counters)return s}catch(e){}return{userName:'Usuário',list:[],counters:[]}})();
+let cur=null,period='today',cfRes=null;
+
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}render()}
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800)}
+function confirmBox(msg,title){return new Promise(r=>{cfRes=r;$('cfT').textContent=title||'Confirmar';$('cfM').textContent=msg;$('cfDlg').showModal()})}
+function cfEnd(v){$('cfDlg').close();if(cfRes){cfRes(v);cfRes=null}}
+
+/* ---------- datas ---------- */
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const today=()=>ymd(new Date());
+function weekStart(s){const d=new Date(s+'T12:00:00');d.setDate(d.getDate()-((d.getDay()||7)-1));return ymd(d)}
+const fmtD=s=>new Date(s+'T12:00:00').toLocaleDateString('pt-BR');
+
+/* ---------- contadores ---------- */
+function rec(){let r=db.counters.find(c=>c.date===today());if(!r){r={date:today(),ligacoes:0,reunioes:0};db.counters.push(r)}return r}
+function sum(rs){return rs.reduce((a,r)=>({ligacoes:a.ligacoes+(r.ligacoes||0),reunioes:a.reunioes+(r.reunioes||0)}),{ligacoes:0,reunioes:0})}
+function inc(k,n=1){const r=rec();r[k]=Math.max(0,(r[k]||0)+n)}
+async function adjust(k,d){
+  const def=DEFS.find(x=>x.k===k);
+  if(!await confirmBox(`${d>0?'Acrescentar':'Subtrair'} 1 em “${def.l}”?`,'Ajuste manual'))return;
+  if(d<0&&(rec()[k]||0)===0){toast('O valor não pode ser negativo.');return}
+  inc(k,d);save()
+}
+function renderCounters(){
+  const wk=weekStart(today()),t=rec(),w=sum(db.counters.filter(c=>weekStart(c.date)===wk));
+  const e=new Date(wk+'T12:00:00');e.setDate(e.getDate()+6);
+  $('wk').textContent=`Semana: ${fmtD(wk).slice(0,5)} – ${fmtD(ymd(e)).slice(0,5)}`;
+  $('cnt').innerHTML=DEFS.map(d=>`<div class="c"><div style="font-size:1.4rem">${d.ic}</div><div class="v" style="color:${d.c}">${t[d.k]||0}</div><div class="l">${d.l}</div><div class="s">hoje · ${w[d.k]} na semana</div>
+  <button class="btn d sm" onclick="adjust('${d.k}',-1)">−</button> <button class="btn sm" style="background:${d.c};border-color:${d.c};color:#fff" onclick="adjust('${d.k}',1)">+</button></div>`).join('')
+}
+
+/* ---------- lista de empresas ---------- */
+function toggleAdd(){const a=$('addArea'),s=a.style.display!=='none';a.style.display=s?'none':'block';$('btnAdd').textContent=s?'+ Adicionar empresas':'Fechar';if(!s)$('raw').focus()}
+const digits=t=>String(t).replace(/\D/g,'');
+function addCo(emp,tel,set,cid){
+  if(db.list.some(x=>digits(x.telefone)===digits(tel)))return false;
+  db.list.push({id:uid(),empresa:emp,telefone:tel,setor:set||'',cidade:cid||'',status:'pendente',responsavel:'',contato:'',obs:'',retorno:null,reuniao:null,msgEnviada:false});return true
+}
+function addOne(){
+  const e=$('nEmp').value.trim(),t=$('nTel').value.trim();
+  if(!e||!t){toast('Informe empresa e telefone.');return}
+  if(!addCo(e,t,$('nSet').value.trim(),$('nCid').value.trim())){toast('Esse telefone já está na lista.');return}
+  ['nEmp','nTel','nSet','nCid'].forEach(i=>$(i).value='');save();toast(`“${e}” adicionada!`);$('nEmp').focus()
+}
+function loadList(){
+  const raw=$('raw').value.trim();if(!raw){toast('Cole pelo menos uma empresa.');return}
+  let ok=0,bad=0,dup=0;
+  raw.replace(/\n/g,';').split(';').map(s=>s.trim()).filter(Boolean).forEach(en=>{
+    const p=en.split(',').map(s=>s.trim());
+    if(p.length<2||!p[0]||!p[1]){bad++;return}
+    if(addCo(p[0],p[1],p[2],p[3]))ok++;else dup++
+  });
+  if(!ok){toast(dup?`Nenhuma nova: ${dup} telefone(s) já cadastrado(s).`:'Nenhuma entrada válida. Use: Empresa, Telefone, Setor, Cidade.');return}
+  $('raw').value='';toggleAdd();save();toast(`${ok} empresa(s) adicionada(s)`+(dup?`, ${dup} duplicada(s) ignorada(s)`:'')+(bad?`, ${bad} inválida(s) ignorada(s)`:'')+'.')
+}
+async function clearList(){
+  if(!db.list.length||!await confirmBox(`Limpar a lista de ${db.list.length} empresa(s)? Os contadores não são alterados.`,'Limpar tabela'))return;
+  db.list=[];save()
+}
+async function delRow(id){
+  const p=db.list.find(x=>x.id===id);if(!p||!await confirmBox(`Remover “${p.empresa}” da lista?`,'Excluir empresa'))return;
+  db.list=db.list.filter(x=>x.id!==id);save()
+}
+function copy(t){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('Copiado: '+t)).catch(()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove();toast('Copiado: '+t)})}
+function copyTel(){const p=db.list.find(x=>x.id===cur);if(p)copy(p.telefone)}
+function wa(t){let d=digits(t).replace(/^0+/,'');if(d.length<=11)d='55'+d;return 'https://wa.me/'+d}
+function toggleMsg(id){const p=db.list.find(x=>x.id===id);if(p){p.msgEnviada=!p.msgEnviada;save()}}
+function renderTable(){
+  const l=db.list;
+  $('empty').style.display=l.length?'none':'block';$('tw').style.display=l.length?'block':'none';$('btnClr').style.display=l.length?'inline-block':'none';
+  $('badge').style.display=l.length?'inline-block':'none';$('badge').textContent=l.length;
+  $('tb').innerHTML=l.map((p,i)=>`<tr class="${p.status==='nao_atendido'&&p.msgEnviada?'msg':''}">
+    <td class="sub" data-label="#">${i+1}</td>
+    <td data-label="Empresa"><b>${esc(p.empresa)}</b>${p.obs?`<div class="sub">💬 ${esc(p.obs.length>40?p.obs.slice(0,40)+'…':p.obs)}</div>`:''}</td>
+    <td data-label="Telefone">${esc(p.telefone)}</td>
+    <td class="sub" data-label="Setor">${esc(p.setor)||'—'}</td><td class="sub" data-label="Cidade">${esc(p.cidade)||'—'}</td>
+    <td data-label="Status"><div><span class="bd ${p.status}">${ST[p.status]||ST.pendente}</span>${p.status==='nao_atendido'&&p.msgEnviada?' <span class="bd reuniao">✉ enviada</span>':''}${p.status==='reuniao'&&p.reuniao?`<div class="sub">📅 ${new Date(p.reuniao).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>`:''}${p.status==='ligar_mais_tarde'&&p.retorno?`<div class="sub">🕒 ${new Date(p.retorno).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>`:''}</div></td>
+    <td data-label="Responsável">${p.responsavel?`${esc(p.responsavel)}${p.contato?`<div class="sub">📱 ${esc(p.contato)}</div>`:''}`:'<span class="sub">—</span>'}</td>
+    <td data-label="Ações"><div class="act"><button class="btn ${p.status==='pendente'?'p':''} sm" onclick="openCall('${p.id}')" title="Registrar resultado">${p.status==='pendente'?'📞':'🔄'}</button>${p.status==='nao_atendido'?`<a class="btn g sm" href="${wa(p.telefone)}" target="_blank" rel="noopener" title="Abrir conversa no WhatsApp">💬</a><button class="btn sm ${p.msgEnviada?'g':''}" onclick="toggleMsg('${p.id}')" title="Marcar como mensagem enviada">${p.msgEnviada?'✓':'✉'}</button>`:''}<button class="btn d sm" onclick="delRow('${p.id}')" title="Remover">🗑</button></div></td>
+  </tr>`).join('')
+}
+
+/* ---------- resultado da ligação ---------- */
+function openCall(id){
+  const p=db.list.find(x=>x.id===id);if(!p)return;cur=id;
+  $('cEmp').textContent=p.empresa;$('cTel').textContent=p.telefone;$('cLink').href='tel:'+p.telefone.replace(/[^\d+]/g,'');
+  $('cExtra').textContent=[p.setor,p.cidade].filter(Boolean).join(' · ');$('cObs').value=p.obs||'';
+  backOpts();$('callDlg').showModal()
+}
+function closeCall(){saveObs();$('callDlg').close()}
+function saveObs(){const p=db.list.find(x=>x.id===cur);if(p)p.obs=$('cObs').value.trim()}
+function backOpts(){$('cOpts').style.display='grid';$('cLater').style.display='none';$('cMeet').style.display='none'}
+function showLater(){
+  $('cOpts').style.display='none';$('cLater').style.display='block';$('lErr').style.display='none';
+  const n=new Date();n.setMinutes(Math.ceil(n.getMinutes()/15)*15,0,0);$('lDate').value=ymd(n);$('lTime').value=pad(n.getHours())+':'+pad(n.getMinutes())
+}
+function showMeet(){
+  const p=db.list.find(x=>x.id===cur);
+  $('cOpts').style.display='none';$('cMeet').style.display='block';$('mErr').style.display='none';
+  $('mNome').value=p.responsavel||'';$('mCont').value=p.contato||'';
+  const n=new Date();n.setMinutes(Math.ceil(n.getMinutes()/15)*15,0,0);
+  $('mDate').value=p.reuniao?p.reuniao.slice(0,10):ymd(n);$('mTime').value=p.reuniao?p.reuniao.slice(11,16):pad(n.getHours())+':'+pad(n.getMinutes());
+  setTimeout(()=>$('mNome').focus(),50)
+}
+function result(r){
+  const p=db.list.find(x=>x.id===cur);if(!p)return;saveObs();
+  p.status=r;if(r!=='nao_atendido')p.msgEnviada=false;
+  if(r!=='nao_atendido'&&r!=='numero_incorreto')inc('ligacoes');
+  $('callDlg').close();save();toast(`Status: ${ST[r]}${r==='sem_interesse'||r==='responsavel_ausente'?' (+1 ligação)':''}`)
+}
+function confirmLater(){
+  const d=$('lDate').value,t=$('lTime').value;if(!d||!t){$('lErr').style.display='block';return}
+  const p=db.list.find(x=>x.id===cur);saveObs();
+  p.status='ligar_mais_tarde';p.retorno=`${d}T${t}`;p.msgEnviada=false;inc('ligacoes');$('callDlg').close();save();toast('Retorno agendado (+1 ligação)')
+}
+function confirmMeet(){
+  const nome=$('mNome').value.trim(),d=$('mDate').value,t=$('mTime').value;if(!nome||!d||!t){$('mErr').style.display='block';return}
+  const p=db.list.find(x=>x.id===cur);saveObs();
+  p.status='reuniao';p.responsavel=nome;p.contato=$('mCont').value.trim();p.reuniao=`${d}T${t}`;p.msgEnviada=false;
+  inc('ligacoes');inc('reunioes');$('callDlg').close();save();toast(`Reunião agendada com ${nome} (+1 ligação, +1 reunião)`)
+}
+
+/* ---------- relatórios ---------- */
+const PER={today:'Hoje',week:'Esta semana',month:'Este mês',year:'Este ano',all:'Todos'};
+function recs(){const t=today();return db.counters.filter(c=>({today:c.date===t,week:weekStart(c.date)===weekStart(t),month:c.date.slice(0,7)===t.slice(0,7),year:c.date.slice(0,4)===t.slice(0,4),all:true})[period])}
+function renderReport(){
+  $('tabs').innerHTML=Object.entries(PER).map(([k,v])=>`<button class="btn ${k===period?'on':''}" onclick="period='${k}';renderReport()">${v}</button>`).join('');
+  const rs=recs().slice().sort((a,b)=>a.date.localeCompare(b.date)),s=sum(rs),max=Math.max(1,...rs.map(r=>Math.max(r.ligacoes||0,r.reunioes||0)));
+  const conv=s.ligacoes?(s.reunioes/s.ligacoes*100).toFixed(1).replace('.',',')+'%':'—';
+  $('repOut').innerHTML=`<div class="card"><b>${PER[period]}</b><div class="cnt">
+    ${DEFS.map(d=>`<div class="c"><div class="v" style="color:${d.c}">${s[d.k]}</div><div class="l">${d.l}</div></div>`).join('')}
+    <div class="c"><div class="v">${conv}</div><div class="l">Reuniões por ligação</div></div></div></div>
+  ${rs.length?`<div class="card"><b>Evolução diária</b>
+    <div class="bars">${rs.map(r=>`<div title="${fmtD(r.date)}: ${r.ligacoes||0} lig. / ${r.reunioes||0} reun."><span style="display:flex;align-items:flex-end;gap:2px;height:100px"><i style="height:${(r.ligacoes||0)/max*100}%;background:#0d6efd"></i><i style="height:${(r.reunioes||0)/max*100}%;background:#198754"></i></span>${fmtD(r.date).slice(0,5)}</div>`).join('')}</div>
+    <div class="sub">🟦 Ligações · 🟩 Reuniões</div>
+    <div class="tw"><table style="min-width:0"><thead><tr><th>Data</th><th>Ligações</th><th>Reuniões</th></tr></thead><tbody>
+    ${rs.slice().reverse().map(r=>`<tr><td>${fmtD(r.date)}</td><td>${r.ligacoes||0}</td><td>${r.reunioes||0}</td></tr>`).join('')}</tbody></table></div></div>`
+  :'<div class="card empty">Nenhum dado para este período.</div>'}`
+}
+function exportCSV(){
+  const rs=recs().slice().sort((a,b)=>a.date.localeCompare(b.date));if(!rs.length){toast('Nenhum dado para exportar.');return}
+  dl(`relatorio_ligacoes_${period}_${today()}.csv`,'text/csv;charset=utf-8','Data,Ligações,Reuniões\n'+rs.map(r=>`${r.date},${r.ligacoes||0},${r.reunioes||0}`).join('\n'))
+}
+
+/* ---------- backup ---------- */
+function dl(name,type,content){const u=URL.createObjectURL(new Blob([content],{type}));const a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),500)}
+function exportJSON(){dl(`backup_ligacoes_${today().replace(/-/g,'')}.json`,'application/json',JSON.stringify(db,null,2));toast('Backup baixado!')}
+function importJSON(ev){
+  const f=ev.target.files[0];if(!f)return;ev.target.value='';
+  const r=new FileReader();r.onload=async e=>{
+    try{const d=JSON.parse(e.target.result);if(!Array.isArray(d.list)||!Array.isArray(d.counters))throw 0;
+      if(!await confirmBox('Isso substitui todos os dados atuais (lista e contadores) pelos do arquivo. Continuar?','Restaurar backup'))return;
+      db={userName:d.userName||'Usuário',list:d.list,counters:d.counters};save();toast('Dados restaurados!')
+    }catch(x){toast('Arquivo inválido.')}
+  };r.readAsText(f)
+}
+
+/* ---------- navegação ---------- */
+function view(v){$('user').style.display=v==='user'?'block':'none';$('rep').style.display=v==='rep'?'block':'none';$('tabU').classList.toggle('on',v==='user');$('tabR').classList.toggle('on',v==='rep');if(v==='rep')renderReport()}
+function editName(el){const n=el.textContent.trim();if(n&&n!==db.userName){db.userName=n;try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}}else el.textContent=db.userName}
+function render(){$('uname').textContent=db.userName;renderCounters();renderTable();if($('rep').style.display!=='none')renderReport()}
+render();
+</script>
+</body>
+</html>
